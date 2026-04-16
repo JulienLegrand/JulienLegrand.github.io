@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prof de Robin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #3B6FE8;
+      --primary-light: #EEF3FD;
+      --primary-dark: #1A3A8F;
+      --accent: #F59E0B;
+      --bg: #F0F4FF;
+      --surface: #FFFFFF;
+      --text: #1A1A2E;
+      --text-muted: #7A7A9A;
+      --border: rgba(59,111,232,0.12);
+      --radius: 18px;
+      --radius-sm: 12px;
+      --shadow: 0 4px 20px rgba(59,111,232,0.1);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-header {
+      background: var(--primary);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .avatar-header {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 900; color: #fff;
+      border: 2px solid rgba(255,255,255,0.4);
+      flex-shrink: 0;
+    }
+    .header-text h1 { font-size: 18px; font-weight: 900; color: #fff; letter-spacing: -0.3px; }
+    .header-text p  { font-size: 12px; color: rgba(255,255,255,0.75); margin-top: 1px; }
+
+    .app-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: 660px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 18px 16px;
+      gap: 14px;
+    }
+
+    .api-banner {
+      background: #FFFBEB;
+      border: 1.5px solid #F59E0B;
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #92400E;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .api-banner strong { font-weight: 800; }
+    .api-banner-row { display: flex; gap: 8px; align-items: center; }
+    .api-banner input {
+      flex: 1; font-family: 'Nunito', sans-serif; font-size: 13px;
+      border: 1px solid #F59E0B; border-radius: 8px; padding: 7px 10px;
+      background: #fff; color: var(--text); outline: none;
+    }
+    .api-banner button {
+      font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800;
+      padding: 7px 14px; background: #F59E0B; color: #fff;
+      border: none; border-radius: 8px; cursor: pointer;
+    }
+    .api-banner button:hover { background: #D97706; }
+
+    .chat-window {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1.5px solid var(--border);
+      box-shadow: var(--shadow);
+      display: flex; flex-direction: column;
+      overflow: hidden; flex: 1; min-height: 500px;
+    }
+    .chat-topbar {
+      padding: 12px 16px;
+      border-bottom: 1.5px solid var(--border);
+      background: var(--primary-light);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .status-dot {
+      width: 9px; height: 9px; border-radius: 50%;
+      background: #22C55E;
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
+      flex-shrink: 0;
+    }
+    .chat-topbar .name { font-size: 14px; font-weight: 800; color: var(--primary-dark); }
+    .chat-topbar .sub  { font-size: 12px; color: var(--text-muted); }
+
+    .messages {
+      flex: 1; overflow-y: auto; padding: 18px;
+      display: flex; flex-direction: column; gap: 14px;
+      scroll-behavior: smooth;
+    }
+    .msg { display: flex; flex-direction: column; max-width: 82%; }
+    .msg-prof  { align-self: flex-start; }
+    .msg-eleve { align-self: flex-end; }
+    .msg-label {
+      font-size: 11px; color: var(--text-muted); font-weight: 700;
+      margin-bottom: 4px; padding: 0 6px;
+    }
+    .msg-eleve .msg-label { text-align: right; }
+    .msg-bubble {
+      padding: 11px 16px; border-radius: 20px;
+      font-size: 14px; line-height: 1.65; white-space: pre-wrap;
+    }
+    .msg-prof  .msg-bubble { background: #EEF3FD; color: var(--text); border-bottom-left-radius: 5px; }
+    .msg-eleve .msg-bubble { background: var(--primary); color: #fff; border-bottom-right-radius: 5px; }
+
+    .typing-bubble {
+      display: flex; align-items: center; gap: 5px;
+      padding: 12px 16px; background: #EEF3FD;
+      border-radius: 20px; border-bottom-left-radius: 5px; width: fit-content;
+    }
+    .typing-bubble span {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--primary);
+      animation: blink 1.3s infinite;
+    }
+    .typing-bubble span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-bubble span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes blink { 0%,60%,100%{opacity:0.3;transform:scale(1)} 30%{opacity:1;transform:scale(1.3)} }
+
+    .suggestions {
+      display: flex; flex-wrap: wrap; gap: 7px;
+      padding: 10px 16px 4px;
+    }
+    .sug-chip {
+      font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 700;
+      padding: 6px 13px; border-radius: 20px;
+      border: 1.5px solid var(--border);
+      background: var(--bg); color: var(--text-muted);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .sug-chip:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+
+    .input-area {
+      padding: 12px 16px 14px; border-top: 1.5px solid var(--border);
+      display: flex; gap: 8px; align-items: flex-end;
+    }
+    .input-area textarea {
+      flex: 1; font-family: 'Nunito', sans-serif; font-size: 14px;
+      border: 1.5px solid var(--border); border-radius: 14px;
+      padding: 10px 14px; resize: none; min-height: 42px; max-height: 130px;
+      outline: none; background: var(--bg); color: var(--text);
+      transition: border-color 0.15s; line-height: 1.5;
+    }
+    .input-area textarea:focus { border-color: var(--primary); }
+    .input-area textarea::placeholder { color: var(--text-muted); }
+    .send-btn {
+      width: 42px; height: 42px; border-radius: 50%; border: none;
+      background: var(--primary); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all 0.15s;
+    }
+    .send-btn:hover:not(:disabled) { background: var(--primary-dark); transform: scale(1.07); }
+    .send-btn:disabled { background: #C5CDE8; cursor: not-allowed; }
+    .send-btn svg { width: 18px; height: 18px; fill: #fff; }
+
+    @media (max-width: 480px) {
+      .msg { max-width: 90%; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="avatar-header">R</div>
+  <div class="header-text">
+    <h1>Prof de Robin</h1>
+    <p>CM2 · Aide aux devoirs</p>
+  </div>
+</header>
+
+<main class="app-body">
+
+  <div class="api-banner" id="api-banner">
+    <div><strong>🔑 Clé API Anthropic requise</strong> — à configurer une seule fois.</div>
+    <div class="api-banner-row">
+      <input type="password" id="api-key-input" placeholder="sk-ant-api03-..." />
+      <button onclick="saveApiKey()">Enregistrer</button>
+    </div>
+    <div style="font-size:11px;opacity:0.8;">
+      Clé disponible sur <a href="https://console.anthropic.com" target="_blank" style="color:inherit;">console.anthropic.com</a>
+      — stockée dans le localStorage de ce navigateur.
+    </div>
+  </div>
+
+  <div class="chat-window">
+    <div class="chat-topbar">
+      <div class="status-dot"></div>
+      <div>
+        <div class="name">Professeur de Robin</div>
+        <div class="sub">CM2 · Prêt à aider !</div>
+      </div>
+    </div>
+    <div class="suggestions" id="suggestions"></div>
+    <div class="messages" id="messages"></div>
+    <div class="input-area">
+      <textarea id="input" placeholder="Pose ta question..." rows="1"
+        onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" id="send-btn" onclick="sendMessage()">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+const PROFILE = {
+  name: 'Robin',
+  welcome: "Salut Robin ! 👋 Je suis ton professeur particulier. Je suis là pour t'aider à comprendre tes leçons et tes exercices — mais je ne te donnerai pas les réponses toutes faites, on va réfléchir ensemble ! Sur quoi tu travailles aujourd'hui ?",
+  suggestions: [
+    "J'ai un problème de maths 🔢",
+    "Je comprends pas ma leçon",
+    "Les fractions c'est quoi ?",
+    "Aide-moi en conjugaison ✏️"
+  ],
+  system: `Tu es le professeur particulier de Robin, un garçon de 10 ans en fin de CM2.
+
+RÈGLES ABSOLUES :
+- Tu ne donnes JAMAIS la réponse directement. Tu guides Robin avec des questions et des indices progressifs.
+- Si Robin te demande "donne-moi la réponse" ou "dis-moi juste la réponse", tu refuses gentiment et tu proposes un indice à la place.
+- Tu poses UNE seule question à la fois pour ne pas le surcharger.
+- Tes réponses font 3 à 5 phrases courtes maximum.
+
+TON ET STYLE :
+- Langage simple, chaleureux, encourageant. Tu t'adresses à Robin avec "tu".
+- Tu utilises des exemples concrets de sa vie quotidienne (jeux, sport, animaux, nourriture).
+- Si Robin se trompe, tu commences toujours par valoriser l'effort ("Bonne réflexion !", "Tu es sur la bonne voie !") avant de corriger.
+- Tu célèbres ses progrès avec enthousiasme.
+
+MÉTHODE :
+1. Si Robin pose une question, demande-lui d'abord ce qu'il comprend déjà du sujet.
+2. Guide par des questions simples ("Selon toi, que se passe-t-il si...?").
+3. Si Robin est bloqué après 2 échanges, donne un indice concret (pas la réponse).
+4. Si Robin est bloqué après 4 échanges, tu peux décomposer le problème étape par étape avec lui.
+
+PROGRAMME CM2 : Mathématiques (fractions, divisions posées, géométrie, mesures, problèmes), Français (conjugaison passé composé/imparfait/futur, accords, grammaire, orthographe, rédaction), Histoire-Géo, Sciences.`
+};
+
+let history = [];
+let isLoading = false;
+let apiKey = localStorage.getItem('anthropic_api_key') || '';
+
+function saveApiKey() {
+  const val = document.getElementById('api-key-input').value.trim();
+  if (!val.startsWith('sk-')) { alert('La clé API doit commencer par "sk-"'); return; }
+  apiKey = val;
+  localStorage.setItem('anthropic_api_key', val);
+  document.getElementById('api-banner').style.display = 'none';
+}
+
+function init() {
+  if (apiKey) document.getElementById('api-banner').style.display = 'none';
+  history.push({ role: 'assistant', content: PROFILE.welcome });
+  renderMessages();
+  renderSuggestions();
+}
+
+function renderMessages() {
+  const container = document.getElementById('messages');
+  container.innerHTML = '';
+  history.forEach(msg => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'msg ' + (msg.role === 'assistant' ? 'msg-prof' : 'msg-eleve');
+    const label = document.createElement('div');
+    label.className = 'msg-label';
+    label.textContent = msg.role === 'assistant' ? 'Professeur' : PROFILE.name;
+    const bubble = document.createElement('div');
+    bubble.className = 'msg-bubble';
+    bubble.textContent = msg.content;
+    wrapper.appendChild(label);
+    wrapper.appendChild(bubble);
+    container.appendChild(wrapper);
+  });
+  container.scrollTop = container.scrollHeight;
+}
+
+function renderSuggestions() {
+  const container = document.getElementById('suggestions');
+  container.innerHTML = '';
+  if (history.length <= 1) {
+    PROFILE.suggestions.forEach(s => {
+      const btn = document.createElement('button');
+      btn.className = 'sug-chip';
+      btn.textContent = s;
+      btn.onclick = () => { document.getElementById('input').value = s; sendMessage(); };
+      container.appendChild(btn);
+    });
+  }
+}
+
+function showTyping() {
+  const container = document.getElementById('messages');
+  const wrapper = document.createElement('div');
+  wrapper.className = 'msg msg-prof'; wrapper.id = 'typing';
+  const label = document.createElement('div');
+  label.className = 'msg-label'; label.textContent = 'Professeur';
+  const bubble = document.createElement('div');
+  bubble.className = 'typing-bubble';
+  bubble.innerHTML = '<span></span><span></span><span></span>';
+  wrapper.appendChild(label); wrapper.appendChild(bubble);
+  container.appendChild(wrapper);
+  container.scrollTop = container.scrollHeight;
+}
+function removeTyping() { const t = document.getElementById('typing'); if (t) t.remove(); }
+
+async function sendMessage() {
+  if (isLoading) return;
+  if (!apiKey) {
+    alert("Veuillez d'abord enregistrer votre clé API.");
+    document.getElementById('api-banner').style.display = '';
+    return;
+  }
+  const input = document.getElementById('input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = ''; autoResize(input);
+  isLoading = true;
+  document.getElementById('send-btn').disabled = true;
+  document.getElementById('suggestions').innerHTML = '';
+
+  history.push({ role: 'user', content: text });
+  renderMessages(); showTyping();
+
+  const apiMessages = history.map(m => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content }));
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-calls': 'true'
+      },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1024, system: PROFILE.system, messages: apiMessages })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    const reply = data.content?.[0]?.text || "Je n'ai pas pu répondre. Réessaie !";
+    removeTyping();
+    history.push({ role: 'assistant', content: reply });
+    renderMessages();
+  } catch(err) {
+    removeTyping();
+    const msg = err.message?.includes('401') ? 'Clé API invalide. Vérifiez votre clé.' : "Une erreur s'est produite. Vérifiez votre connexion.";
+    history.push({ role: 'assistant', content: msg });
+    renderMessages();
+  }
+
+  isLoading = false;
+  document.getElementById('send-btn').disabled = false;
+  document.getElementById('input').focus();
+}
+
+function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 130) + 'px'; }
+
+init();
+</script>
+</body>
+</html>
