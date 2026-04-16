@@ -198,14 +198,10 @@
 <main class="app-body">
 
   <div class="api-banner" id="api-banner">
-    <div><strong>🔑 Clé API Anthropic requise</strong> — à configurer une seule fois.</div>
+    <div><strong>🔑 Clé API requise</strong> — à configurer une seule fois.</div>
     <div class="api-banner-row">
       <input type="password" id="api-key-input" placeholder="sk-ant-api03-..." />
       <button onclick="saveApiKey()">Enregistrer</button>
-    </div>
-    <div style="font-size:11px;opacity:0.8;">
-      Clé disponible sur <a href="https://console.anthropic.com" target="_blank" style="color:inherit;">console.anthropic.com</a>
-      — stockée dans le localStorage de ce navigateur.
     </div>
   </div>
 
@@ -265,13 +261,12 @@ PROGRAMME CM2 : Mathématiques (fractions, divisions posées, géométrie, mesur
 
 let history = [];
 let isLoading = false;
-let apiKey = localStorage.getItem('anthropic_api_key') || '';
+let apiKey = localStorage.getItem('prof_api_key') || '';
 
 function saveApiKey() {
   const val = document.getElementById('api-key-input').value.trim();
-  if (!val.startsWith('sk-')) { alert('La clé API doit commencer par "sk-"'); return; }
   apiKey = val;
-  localStorage.setItem('anthropic_api_key', val);
+  localStorage.setItem('prof_api_key', val);
   document.getElementById('api-banner').style.display = 'none';
 }
 
@@ -356,7 +351,7 @@ async function sendMessage() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        "x-client-key": "E6C7F1!903F4C484980+A303D03F1148BAFABBD-A81AA1EC6C4A7C5D37D2B9FF1FF"
+        "x-client-key": apiKey
       },
       body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1024, system: PROFILE.system, messages: apiMessages })
     });
