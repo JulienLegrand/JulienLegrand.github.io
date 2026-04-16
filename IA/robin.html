@@ -355,7 +355,8 @@ async function sendMessage() {
     const res = await fetch('https://claude-worker.julien-legrand67.workers.dev', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        "x-client-key": "E6C7F1!903F4C484980+A303D03F1148BAFABBD-A81AA1EC6C4A7C5D37D2B9FF1FF"
       },
       body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1024, system: PROFILE.system, messages: apiMessages })
     });
